@@ -13,7 +13,7 @@
 
 P.S. 原文显示效果更好喔：） check：https://www.rayjune.me/2018/03/22/elegant-javascript-sorting-algorithm-es6/ 
 
-作者：(RayJune)[https://github.com/rayjune]（转载请署名，请尊重博主含辛茹苦、遍查资料、一行一行含泪码出来的成果。参考&感谢 部分里代码参考地址都已列出）
+作者：[RayJune](https://github.com/rayjune)（转载请署名，请尊重博主含辛茹苦、遍查资料、一行一行含泪码出来的成果。参考&感谢 部分里代码参考地址都已列出）
 
 另，本文中常使用 `swap` 函数，在这里提前列出来，以下就省略了。
 
@@ -732,6 +732,10 @@ console.log(quickSort(arr));
 
 ### 第二版：in-place
 
+等等，有没有觉得第一版中的代码虽然看起来简洁，但是却对空间消耗很大呢？
+
+由此有了 in-place 版本：
+
 ```js
 function quickSort2(arr, left = 0, right = arr.length - 1) {
   if (left < right) {
@@ -747,12 +751,12 @@ function partition (arr, left ,right) {
   let partitionIndex = left;
 
   for (let i = left + 1; i <= right; i++) {
-    if (arr[i] < arr[left]) { //以第一个元素为 pivot
+    if (arr[i] < arr[left]) { // 以第一个元素为 pivot
       swap(arr, i, partitionIndex);
       partitionIndex += 1;
     }
   }
-  swap(arr, left, partitionIndex); //将 pivot 值移至中间
+  swap(arr, left, partitionIndex); // 将 pivot 值移至中间
   
   return partitionIndex;
 }
