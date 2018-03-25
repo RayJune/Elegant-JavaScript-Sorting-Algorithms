@@ -1,10 +1,10 @@
 function quickSort3(arr, left = 0, right = arr.length - 1) {
   if (left < right) {
     const pivot = left + Math.ceil((right - left) * 0.5);
-    const partitionIndex = partition(arr, partitionIndex, left, right);
+    const newPivot = partition(arr, newPivot, left, right);
 
-    quickSort3(arr, left, partitionIndex - 1);
-    quickSort3(arr, partitionIndex + 1, right);
+    quickSort3(arr, left, newPivot - 1);
+    quickSort3(arr, newPivot + 1, right);
   }
 
   return arr;
@@ -12,18 +12,18 @@ function quickSort3(arr, left = 0, right = arr.length - 1) {
 
 function partition(arr, pivot, left, right) {
   const pivotValue = arr[pivot];
-  let partitionIndex = left;
+  let newPivot = left;
 
   swap(arr, pivot, right);
   for (let i = left; i < right; i++) {
     if (arr[i] < pivotValue) {
-      swap(arr, i, partitionIndex);
-      partitionIndex += 1;
+      swap(arr, i, newPivot);
+      newPivot += 1;
     }
   }
-  swap(arr, right, partitionIndex);
+  swap(arr, right, newPivot);
 
-  return partitionIndex;
+  return newPivot;
 }
 
 // test

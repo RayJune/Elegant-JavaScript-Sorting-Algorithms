@@ -1,25 +1,25 @@
 function quickSort2(arr, left = 0, right = arr.length - 1) {
   if (left < right) {
-    const partitionIndex = partition(arr, left, right);
+    const pivot = partition(arr, left, right);
 
-    quickSort2(arr, left, partitionIndex - 1);
-    quickSort2(arr, partitionIndex + 1, right);
+    quickSort2(arr, left, pivot - 1);
+    quickSort2(arr, pivot + 1, right);
   }
   return arr;
 }
 
 function partition (arr, left ,right) {
-  let partitionIndex = left;
+  let pivot = left; // 以第一个元素为 pivot
 
   for (let i = left + 1; i <= right; i++) {
-    if (arr[i] < arr[left]) { // 以第一个元素为 pivot
-      swap(arr, i, partitionIndex);
-      partitionIndex += 1;
+    if (arr[i] < arr[left]) { 
+      swap(arr, i, pivot);
+      pivot += 1;
     }
   }
-  swap(arr, left, partitionIndex); //将 pivot 值移至中间
+  swap(arr, left, pivot); //将 pivot 值移至中间
   
-  return partitionIndex;
+  return pivot;
 }
 
 // test
