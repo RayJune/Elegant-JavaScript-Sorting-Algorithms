@@ -1,4 +1,4 @@
-function quickSort(arr) {
+function quickSort2(arr) {
   const pivot = arr.shift();
   const left = [];
   const right = [];
@@ -9,9 +9,9 @@ function quickSort(arr) {
     element < pivot ? left.push(element) : right.push(element);
   });
 
-  return quickSort(left).concat([pivot], quickSort(right));
+  return quickSort2(left).concat([pivot], quickSort2(right));
 }
 
 // test
 const arr = [91, 60, 96, 7, 35, 65, 10, 65, 9, 30, 20, 31, 77, 81, 24];
-console.log(quickSort(arr));
+console.log(quickSort2(arr));

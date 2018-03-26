@@ -1,9 +1,9 @@
-function quickSort2(arr, left = 0, right = arr.length - 1) {
+function quickSort3(arr, left = 0, right = arr.length - 1) {
   if (left < right) {
     const pivot = partition(arr, left, right);
 
-    quickSort2(arr, left, pivot - 1);
-    quickSort2(arr, pivot + 1, right);
+    quickSort3(arr, left, pivot - 1);
+    quickSort3(arr, pivot + 1, right);
   }
   return arr;
 }

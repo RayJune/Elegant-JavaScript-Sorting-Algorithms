@@ -1,10 +1,10 @@
-function quickSort3(arr, left = 0, right = arr.length - 1) {
+function quickSort4(arr, left = 0, right = arr.length - 1) {
   if (left < right) {
     const pivot = left + Math.ceil((right - left) * 0.5);
     const newPivot = partition(arr, newPivot, left, right);
 
-    quickSort3(arr, left, newPivot - 1);
-    quickSort3(arr, newPivot + 1, right);
+    quickSort4(arr, left, newPivot - 1);
+    quickSort4(arr, newPivot + 1, right);
   }
 
   return arr;
@@ -28,7 +28,7 @@ function partition(arr, pivot, left, right) {
 
 // test
 const arr = [91, 60, 96, 7, 35, 65, 10, 65, 9, 30, 20, 31, 77, 81, 24];
-console.log(quickSort3(arr));
+console.log(quickSort4(arr));
 
 
 function swap(arr, indexA, indexB) {
