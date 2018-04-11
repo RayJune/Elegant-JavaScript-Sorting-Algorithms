@@ -2,18 +2,26 @@
 
 >面试官：小伙子排序算法了解吗？
 
->回答：我能写出来*四种冒泡排序*，*两种选择排序*，*两种插入排序*，*两种哈希排序*，*两种归并排序*，*两种堆排序*，*三种快速排序*。
+>回答：我能写出来*四种冒泡排序*，*两种选择排序*，*两种插入排序*，*两种哈希排序*，*两种归并排序*，*两种堆排序*，*四种快速排序*。
 
 >用我自己的方式。
-<!--more-->
 
 ## 前言
 
-这是[【优雅的 JavaScript 排序算法（ES6）】](https://www.rayjune.me/2018/03/22/elegant-javascript-sorting-algorithm-es6/)的代码仓库，亲可以下载代码进行练习、推敲。
+文中所有代码位于位于[此代码仓库](https://github.com/RayJune/Elegant-JavaScript-Sorting-Algorithms)中，推荐下载代码进行练习、推敲。
 
-P.S. 原文显示效果更好喔：） check：https://www.rayjune.me/2018/03/22/elegant-javascript-sorting-algorithm-es6/ 
+***
 
-作者：[RayJune](https://github.com/rayjune)（转载请署名，请尊重博主含辛茹苦、遍查资料、一行一行含泪码出来的成果。参考&感谢 部分里代码参考地址都已列出）
+号外：博主为 18 届应届生，目前状态是*前端开发*补招进行时。如有内推机会，欢迎一波流带走 ：》
+check 在线简历：[resume.pdf](https://www.rayjune.me/resume.pdf)
+
+另，如果觉得这些用心敲出的代码对你有帮助的话，欢迎 star 一下[代码仓库](https://github.com/RayJune/Elegant-JavaScript-Sorting-Algorithms)，**众筹博主找到一份体面的工作，在这里给大家递茶了**：）
+
+***
+
+P.S. 原文显示效果更好喔：） check：[rayjune.me/优雅的 JavaScript 排序算法（ES6）](https://www.rayjune.me/2018/03/22/elegant-javascript-sorting-algorithm-es6/)
+
+作者：[RayJune](https://github.com/rayjune)（**转载请署名，请尊重博主含辛茹苦、遍查资料、一行一行含泪码出来的成果**。参考&感谢 部分里代码参考地址都已列出）
 
 另，本文中常使用 `swap` 函数，在这里提前列出来，以下就省略了。
 
@@ -730,35 +738,23 @@ const arr = [91, 60, 96, 7, 35, 65, 10, 65, 9, 30, 20, 31, 77, 81, 24];
 console.log(quickSort(arr));
 ```
 
-### 第二版：in-place
+### 第二版：函数式编程
 
-等等，有没有觉得第一版中的代码虽然看起来简洁，但是却对空间消耗很大呢？
-
-由此有了 in-place 版本：
+函数式编程：结构清晰，一目了然。
 
 ```js
-function quickSort2(arr, left = 0, right = arr.length - 1) {
-  if (left < right) {
-    const partitionIndex = partition(arr, left, right);
+function quickSort2(arr) {
+  const pivot = arr.shift();
+  const left = [];
+  const right = [];
 
-    quickSort2(arr, left, partitionIndex - 1);
-    quickSort2(arr, partitionIndex + 1, right);
-  }
-  return arr;
-}
+  if (arr.length < 2) { return arr; }
 
-function partition (arr, left ,right) {
-  let partitionIndex = left;
+  arr.forEach((element) => {
+    element < pivot ? left.push(element) : right.push(element);
+  });
 
-  for (let i = left + 1; i <= right; i++) {
-    if (arr[i] < arr[left]) { // 以第一个元素为 pivot
-      swap(arr, i, partitionIndex);
-      partitionIndex += 1;
-    }
-  }
-  swap(arr, left, partitionIndex); // 将 pivot 值移至中间
-  
-  return partitionIndex;
+  return quickSort2(left).concat([pivot], quickSort2(right));
 }
 
 // test
@@ -766,20 +762,67 @@ const arr = [91, 60, 96, 7, 35, 65, 10, 65, 9, 30, 20, 31, 77, 81, 24];
 console.log(quickSort2(arr));
 ```
 
-### 第三版：关于 pivot 的选取
+### 第三版：in-place
 
-博主泪目，我也没看出来 `const pivot = left + Math.ceil((right - left) * 0.5)` 这句的意义是啥，只知道是一个更“高级”的 `pivot` 选取方式。
+等等，有没有觉得第一、二版中的代码虽然看起来简洁，但是却对空间消耗很大呢？
 
-欢迎评论区有知道的大神解读：
+由此有了 in-place 版本：
 
 ```js
 function quickSort3(arr, left = 0, right = arr.length - 1) {
   if (left < right) {
-    const pivot = left + Math.ceil((right - left) * 0.5);
-    const partitionIndex = partition(arr, partitionIndex, left, right);
+    const pivot = partition(arr, left, right);
 
-    quickSort3(arr, left, partitionIndex - 1);
-    quickSort3(arr, partitionIndex + 1, right);
+    quickSort3(arr, left, pivot - 1);
+    quickSort3(arr, pivot + 1, right);
+  }
+  return arr;
+}
+
+function partition (arr, left ,right) {
+  let pivot = left; // 以第一个元素为 pivot
+
+  for (let i = left + 1; i <= right; i++) {
+    if (arr[i] < arr[left]) { 
+      swap(arr, i, pivot);
+      pivot += 1;
+    }
+  }
+  swap(arr, left, pivot); //将 pivot 值移至中间
+  
+  return pivot;
+}
+
+// test
+const arr = [91, 60, 96, 7, 35, 65, 10, 65, 9, 30, 20, 31, 77, 81, 24];
+console.log(quickSort3(arr));
+```
+
+### 第四版：关于 pivot 的选取
+
+这一版的亮点是 pivot 的选取，不再是简单的取 `arr[0]`，而是：
+
+```js
+const pivot = left + Math.ceil((right - left) * 0.5)
+```
+
+非常感谢评论区的大神 @Chris_dong 的解释：
+
+>`const pivot = left + Math.ceil((right - left) * 0.5)` => (去掉MAth.ceil是不是很好理解) `left + (right - left) * 0.5` => `(right + left) * 0.5`。
+
+看到真相的我眼泪掉下来，原来是取中间值。。。
+
+由此有了以下版本：
+
+```js
+function quickSort4(arr, left = 0, right = arr.length - 1) {
+  if (left < right) {
+    // const pivot = left + Math.ceil((right - left) * 0.5);
+    const pivot = Math.floor((right + left) / 2);
+    const newPivot = partition(arr, pivot, left, right);
+
+    quickSort4(arr, left, newPivot - 1);
+    quickSort4(arr, newPivot + 1, right);
   }
 
   return arr;
@@ -787,25 +830,25 @@ function quickSort3(arr, left = 0, right = arr.length - 1) {
 
 function partition(arr, pivot, left, right) {
   const pivotValue = arr[pivot];
-  let partitionIndex = left;
+  let newPivot = left;
 
   swap(arr, pivot, right);
   for (let i = left; i < right; i++) {
     if (arr[i] < pivotValue) {
-      swap(arr, i, partitionIndex);
-      partitionIndex += 1;
+      swap(arr, i, newPivot);
+      newPivot += 1;
     }
   }
-  swap(arr, right, partitionIndex);
+  swap(arr, right, newPivot);
 
-  return partitionIndex;
+  return newPivot;
 }
 
 const arr = [91, 60, 96, 7, 35, 65, 10, 65, 9, 30, 20, 31, 77, 81, 24];
-console.log(quickSort3(arr));
+console.log(quickSort4(arr));
 ```
 
-## 总结 & 适用场合
+## 总结 & 答疑
 
 提出几个问题，可以当做自我检测：
 
@@ -835,19 +878,23 @@ console.log(quickSort3(arr));
 
 选择排序只需要 `O(n)` 次交换，这一点它完爆冒泡排序。
 
+***
+
+答疑：
+
 * 博主你的代码从哪里抄的？
 
-都是博主含辛茹苦、遍查资料、一行一行含泪认真码出来的。我会告诉你 参考&借阅 部分里我把来源地址都列出来了嘛：）
+都是博主含辛茹苦、遍查资料、一行一行含泪认真码出来的。参考&感谢 部分里列出了所有来源地址：）
 
-* 博主你在哪里工作？
+* 为什么不用 ES5 写呢？
 
-18 届校招生，春招补招参与者，欢迎一波流内推带走：》
+实际上这篇文章继承于[优雅的 JavaScript 排序算法](https://www.rayjune.me/2017/10/19/elegant-javascript-sorting-algorithm/) 。这一版是上一般的姐妹版（解释精简，使用 ES6 使代码更精简），若想参考英文引用、ES5 代码、过程详细解释可以参考[第一版](https://www.rayjune.me/2017/10/19/elegant-javascript-sorting-algorithm/)。
 
-欢迎 check 简历：https://www.rayjune.me/resume.pdf
+用 `ES6` 是为了更强大的表现力，从而让我们更加关注于算法的内在，不被一些边边角角所束缚。
 
 ## 附录：代码风格
 
-博主一向认为是由【*代码品味*】这种东西存在的，可以从我之前的这篇文章[从 shuffle 看代码品味](http://localhost:4000/2018/03/13/see-code-taste-from-shuffle/)一窥端倪。
+博主一向认为是有【*代码品味*】这种东西存在的，可以从之前的这篇文章[从 shuffle 看代码品味](http://localhost:4000/2018/03/13/see-code-taste-from-shuffle/)一窥端倪。
 
 再次表达一下自己的观点：
 
@@ -867,7 +914,7 @@ console.log(quickSort3(arr));
 * 自增（`++`）和自减（`--`）运算符使用 `+=` 和 `-=` 代替 (`for` 中的最后一个条件除外)；
 * 使用 `ES6` 中的默认参数方式（快速排序中）简化代码，将关键逻辑突出；
 * `Eslint` + Airbnb 全局控制代码风格;
-* 在风格之外加上自己的喜好，比如用 `function` 声明函数，具体原因见：[从 shuffle 看代码品味](http://localhost:4000/2018/03/13/see-code-taste-from-shuffle/#%E6%9C%80%E7%BB%88%E8%A7%A3%E7%AD%94)。
+* 在风格之外加上自己的喜好，比如用 `function` 声明函数，具体原因见：[从 shuffle 看代码品味](https://www.rayjune.me/2018/03/13/see-code-taste-from-shuffle/#%E6%9C%80%E7%BB%88%E8%A7%A3%E7%AD%94)。
 
 这是我的品味，你的呢：）
 
